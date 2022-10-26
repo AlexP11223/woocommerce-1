@@ -19,12 +19,23 @@ class WC_Settings_Tracking {
 	 */
 	protected $allowed_options = array();
 
+
+
 	/**
 	 * WooCommerce settings that have been updated (and will be tracked).
 	 *
 	 * @var array
 	 */
 	protected $updated_options = array();
+
+	/**
+	 * Options for which we also want to monitor the setting values.
+	 *
+	 * @var string[]
+	 */
+	private $record_values = array(
+		'woocommerce_feature_custom_order_tables_enabled',
+	);
 
 	/**
 	 * Init tracking.
@@ -78,7 +89,11 @@ class WC_Settings_Tracking {
 			return;
 		}
 
-		$this->updated_options[] = $option_name;
+		if ( in_array( $option_name, $this->record_values, true ) ) {
+			$this->updated_options[] = $option_name . ':' . $new_value;
+		} else {
+			$this->updated_options[] = $option_name;
+		}
 	}
 
 	/**
